@@ -6,7 +6,7 @@ class Account(object):
         """
         Return a list of Accounts from Toshl for the current user
         """
-        response = self.client._make_request('/accounts')
+        response = self.client.make_request('/accounts')
         response = response.json()
         return self.client._list_response(response)
 
@@ -24,23 +24,23 @@ class Account(object):
         """
         Return a specific account given its ID
         """
-        response = self.client._make_request('/accounts/{0}'.format(account_id))
+        response = self.client.make_request('/accounts/{0}'.format(account_id))
         return response.json()
 
     def create(self, json_payload):
-        response = self.client._make_request(
+        response = self.client.make_request(
             '/accounts', 'POST', json=json_payload)
         if response.status_code == 201:
             return self.client._parse_location_header(response)
 
     def update(self, account_id, json_payload):
-        response = self.client._make_request(
+        response = self.client.make_request(
             '/accounts/{0}'.format(account_id), 'PUT', json=json_payload)
         if response.status_code == 200:
             return response.json()
 
     def delete(self, account_id):
-        return self.client._make_request(
+        return self.client.make_request(
             '/accounts/{0}'.format(account_id), 'DELETE')
 
     def move(self, account_id, position):
@@ -48,7 +48,7 @@ class Account(object):
             'position': position
         }
 
-        return self.client._make_request(
+        return self.client.make_request(
             '/accounts/{0}/move'.format(account_id), 'POST', json=json_payload)
 
     def reorder(self, accounts_list):
@@ -56,7 +56,7 @@ class Account(object):
             'order': accounts_list
         }
 
-        return self.client._make_request(
+        return self.client.make_request(
             '/accounts/reorder', 'POST', json=json_payload)
 
     def merge(self, accounts_list, dest_account):
@@ -65,5 +65,5 @@ class Account(object):
             'account': dest_account
         }
 
-        return self.client._make_request(
+        return self.client.make_request(
             '/accounts/merge', 'POST', json=json_payload)

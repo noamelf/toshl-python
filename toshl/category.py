@@ -3,7 +3,7 @@ class Category(object):
         self.client = client
 
     def list(self):
-        response = self.client._make_request('/categories')
+        response = self.client.make_request('/categories')
         response = response.json()
         return self.client._list_response(response)
 

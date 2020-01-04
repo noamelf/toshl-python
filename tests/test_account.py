@@ -178,7 +178,7 @@ class TestAccount(TestCase):
         client = ToshlClient('abcd1234')
 
         with self.assertRaises(ToshlException) as ex:
-            client._make_request('/accounts/111', 'GET')
+            client.make_request('/accounts/111', 'GET')
 
         assert ex.exception.status_code == 404
         assert ex.exception.error_id == 'error.object.not_found'

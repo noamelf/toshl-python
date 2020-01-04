@@ -8,7 +8,7 @@ class ToshlClient(object):
     def __init__(self, token):
         self._token = token
 
-    def _make_request(
+    def make_request(
             self, api_resource, method='GET', params=None, **kwargs):
         """
         Shortcut for a generic request to the Toshl API

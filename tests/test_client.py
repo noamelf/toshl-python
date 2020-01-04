@@ -23,7 +23,7 @@ class TestClient(TestCase):
     def test_client_can_make_request(self, mock_request):
         mock_request.return_value = self.success_mocked_response
         client = ToshlClient('abcd1234')
-        client._make_request('/me', 'GET')
+        client.make_request('/me', 'GET')
         mock_request.assert_called_once_with(
             headers={'Authorization': 'Bearer abcd1234'},
             method='GET', params=None, url='https://api.toshl.com/me')
@@ -32,7 +32,7 @@ class TestClient(TestCase):
     def test_client_can_make_request_with_params(self, mock_request):
         mock_request.return_value = self.success_mocked_response
         client = ToshlClient('abcd1234')
-        client._make_request('/me', 'GET', params={'a': 'foo1', 'b': 'foo2'})
+        client.make_request('/me', 'GET', params={'a': 'foo1', 'b': 'foo2'})
         mock_request.assert_called_once_with(
             headers={'Authorization': 'Bearer abcd1234'},
             method='GET', params={'a': 'foo1', 'b': 'foo2'},
@@ -42,7 +42,7 @@ class TestClient(TestCase):
     def test_client_can_make_request_with_utf8_params(self, mock_request):
         mock_request.return_value = self.success_mocked_response
         client = ToshlClient('abcd1234')
-        client._make_request(
+        client.make_request(
             '/me', 'GET', params={'a': u'foo1', 'b': u'£123'})
         mock_request.assert_called_once_with(
             headers={'Authorization': 'Bearer abcd1234'},
@@ -53,7 +53,7 @@ class TestClient(TestCase):
     def test_client_set_auth_token_correctly(self, mock_request):
         mock_request.return_value = self.success_mocked_response
         client = ToshlClient('AAABBBCCCDDD')
-        client._make_request('/me', 'GET', params={'a': 'foo1', 'b': 'foo2'})
+        client.make_request('/me', 'GET', params={'a': 'foo1', 'b': 'foo2'})
         assert mock_request.call_args[1]['headers']['Authorization'] == \
             'Bearer AAABBBCCCDDD'
 
@@ -71,7 +71,7 @@ class TestClient(TestCase):
         client = ToshlClient('abcd1234')
 
         with self.assertRaises(ToshlException) as ex:
-            client._make_request('/me', 'GET')
+            client.make_request('/me', 'GET')
 
         assert ex.exception.status_code == 400
         assert ex.exception.error_id == 'exception_id'
@@ -103,7 +103,7 @@ class TestClient(TestCase):
         client = ToshlClient('abcd1234')
 
         with self.assertRaises(ToshlException) as ex:
-            client._make_request('/me', 'GET')
+            client.make_request('/me', 'GET')
 
         assert ex.exception.status_code == 400
         assert ex.exception.error_id == 'exception_id'
