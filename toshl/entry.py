@@ -39,3 +39,8 @@ class Entry(object):
         )
         response.raise_for_status()
         logger.info(f'Updated entry: {entry["id"]}')
+
+    def update_entry(self, entry_id, **updates: dict):
+        entry: dict = self.get(entry_id)
+        entry.update(updates)
+        self.put(entry)
