@@ -1,11 +1,13 @@
+from functools import partial
+
+
 class Category(object):
     def __init__(self, client):
         self.client = client
 
     def list(self):
-        response = self.client.make_request('/categories')
-        response = response.json()
-        return self.client._list_response(response)
+        partial_request = partial(self.client.pagination_partial_request, url="/categories")
+        return self.client.pagination_helper(partial_request)
 
     def search(self, category_name):
         categories = self.list()

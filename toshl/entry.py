@@ -1,4 +1,5 @@
 import logging
+from functools import partial
 
 logger = logging.getLogger(__name__)
 
@@ -7,23 +8,14 @@ class Entry(object):
     def __init__(self, client):
         self.client = client
 
-    def _list_pagination(self, from_date, to_date, page):
-        response = self.client.make_request(
-            "/entries", params={"from": from_date, "to": to_date, "page": page}
-        )
-        return response
-
     def list(self, from_date, to_date):
-        page = 0
-        entries = []
-        while True:
-            response = self._list_pagination(from_date, to_date, page)
-            entries.extend(response.json())
-            if "next" not in response.links:
-                break
-            page += 1
-
-        return entries
+        partial_request = partial(
+            self.client.pagination_partial_request,
+            url="/entries",
+            from_date=from_date,
+            to_date=to_date,
+        )
+        return self.client.pagination_helper(partial_request)
 
     def create(self, json_payload):
         response = self.client.make_request("/entries", "POST", json=json_payload)

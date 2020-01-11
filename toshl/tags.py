@@ -1,8 +1,10 @@
+from functools import partial
+
+
 class Tag(object):
     def __init__(self, client):
         self.client = client
 
     def list(self):
-        response = self.client.make_request('/tags')
-        response = response.json()
-        return self.client._list_response(response)
+        partial_request = partial(self.client.pagination_partial_request, url="/tags")
+        return self.client.pagination_helper(partial_request)

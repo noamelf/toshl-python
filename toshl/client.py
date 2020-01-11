@@ -1,4 +1,7 @@
+from functools import partial
+
 import requests
+
 from .exceptions import ToshlException
 
 
@@ -38,7 +41,7 @@ class ToshlClient(object):
         if response.status_code >= 400:
             error_response = response.json()
 
-            raise(ToshlException(
+            raise (ToshlException(
                 status_code=response.status_code,
                 error_id=error_response['error_id'],
                 error_description=error_response['description'],
@@ -60,3 +63,21 @@ class ToshlClient(object):
 
     def _parse_location_header(self, response):
         return response.headers['Location'].split('/')[-1:][0]
+
+    def pagination_partial_request(self, url, page, from_date=None, to_date=None):
+        if from_date and to_date:
+            return self.make_request(url, params={"from": from_date, "to": to_date, "page": page})
+        return self.make_request(url, params={"page": page})
+
+    @staticmethod
+    def pagination_helper(http_request_fn):
+        page = 0
+        entries = []
+        while True:
+            response = http_request_fn(page=page)
+            entries.extend(response.json())
+            if "next" not in response.links:
+                break
+            page += 1
+
+        return entries
