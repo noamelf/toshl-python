@@ -30,9 +30,14 @@ class Entry(object):
             f"/entries/{entry['id']}", "PUT", json=entry
         )
         response.raise_for_status()
-        logger.info(f'Updated entry: {entry["id"]}')
+        logger.debug(f'Updated entry: {entry["id"]}')
 
     def update_entry(self, entry_id, **updates: dict):
         entry: dict = self.get(entry_id)
         entry.update(updates)
         self.put(entry)
+
+    def delete(self, entry_id):
+        response = self.client.make_request(f"/entries/{entry_id}", "DELETE")
+        response.raise_for_status()
+        logger.debug(f'Deleted entry: {entry_id}')
